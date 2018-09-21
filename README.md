@@ -22,219 +22,63 @@ npm run build
 or navigate to the `node_modules/grunt` directory and issue the `grunt` command. You can now start your Grafana server instance
 and see the **_O-MI Server_** plugin under the _**Plugin**_ section.
 
-### Query API
+###Usage
 
-Example `timeserie` request
-``` javascript
-{
-  "panelId": 1,
-  "range": {
-    "from": "2016-10-31T06:33:44.866Z",
-    "to": "2016-10-31T12:33:44.866Z",
-    "raw": {
-      "from": "now-6h",
-      "to": "now"
-    }
-  },
-  "rangeRaw": {
-    "from": "now-6h",
-    "to": "now"
-  },
-  "interval": "30s",
-  "intervalMs": 30000,
-  "targets": [
-     { "target": "upper_50", "refId": "A", "type": "timeserie" },
-     { "target": "upper_75", "refId": "B", "type": "timeserie" }
-  ],
-  "adhocFilters": [{
-    "key": "City",
-    "operator": "=",
-    "value": "Berlin"
-  }],
-  "format": "json",
-  "maxDataPoints": 550
-}
+Create a datasource using the O-MI Server plugin and pointing to your O-MI server:
+![Datasource Creation](docs/images/datasource_creation.PNG)
+
+Create a Table Panel and specify the Datasource you just created.
+
+In order to create the query for the O-MI server, you need to specify 3 parameters: 
+the XML query, the Object Type you want to collect and the table columns mapping based
+on the elements retrieved.
+
+##### XML query
+Is the exact copy of the XML query that is generated using the local O-MI Server web
+interface. It follows the [Communication Protocol Standards for O-MI](http://www.opengroup.org/iot/omi/p2.htm).
+
+Here's an example of a XML query:
 ```
+<omiEnvelope xmlns="http://www.opengroup.org/xsd/omi/1.0/" version="1.0" ttl="0">
+  <read msgformat="odf">
+    <msg>
+      <Objects xmlns="http://www.opengroup.org/xsd/odf/1.0/">
+        <Object>
+          <id>OMI-Service</id>
+          <Object>
+            <id>Settings</id>
+          </Object>
+        </Object>
+      </Objects>
+    </msg>
+  </read>
+</omiEnvelope>
+```
+##### Object Type
+In order for the datasource to generate a list of O-DF items, you have to provide a Object Type
+to instruct the datasource to collect all the O-DF objects of such type from the response. 
+So if you want all the Objects of type `fooBar` you can compile this field with the string `fooBar`.
 
-Example `timeserie` response
-``` javascript
+##### Table columns structure
+The O-MI server responds with an XML message. The Table Panel expects a specific JSON to populate the table.
+Internally the datasource converts the O-DF objects list in a JSON array, in order to map the values for the table.
+
+In this field you can specify three values for each column: the text to show as header, the type of the column and the path
+in dot notation to the value in the O-DF element:
+```
 [
+  [...other columns...]
   {
-    "target":"upper_75", // The field being queried for
-    "datapoints":[
-      [622,1450754160000],  // Metric value as a float , unixtimestamp in milliseconds
-      [365,1450754220000]
-    ]
-  },
-  {
-    "target":"upper_90",
-    "datapoints":[
-      [861,1450754160000],
-      [767,1450754220000]
-    ]
+    "text": "Latitude",
+    "type": "double",
+    "path": "path.to.latitude.in.odf.object"
   }
+  [...other columns...]
 ]
 ```
+This allows the datasource to map the values to the table columns.
+You can see [some examples in this repository](src/samples).
 
-If the metric selected is `"type": "table"`, an example `table` response:
-``` json
-[
-  {
-    "columns":[
-      {"text":"Time","type":"time"},
-      {"text":"Country","type":"string"},
-      {"text":"Number","type":"number"}
-    ],
-    "rows":[
-      [1234567,"SE",123],
-      [1234567,"DE",231],
-      [1234567,"US",321]
-    ],
-    "type":"table"
-  }
-]
-```
+##### Example full metrics configuration
+![Full metrics configuration](docs/images/metrics.PNG)
 
-### Annotation API
-
-The annotation request from the Simple JSON Datasource is a POST request to
-the `/annotations` endpoint in your datasource. The JSON request body looks like this:
-``` javascript
-{
-  "range": {
-    "from": "2016-04-15T13:44:39.070Z",
-    "to": "2016-04-15T14:44:39.070Z"
-  },
-  "rangeRaw": {
-    "from": "now-1h",
-    "to": "now"
-  },
-  "annotation": {
-    "name": "deploy",
-    "datasource": "Simple JSON Datasource",
-    "iconColor": "rgba(255, 96, 96, 1)",
-    "enable": true,
-    "query": "#deploy"
-  }
-}
-```
-
-Grafana expects a response containing an array of annotation objects in the
-following format:
-
-``` javascript
-[
-  {
-    annotation: annotation, // The original annotation sent from Grafana.
-    time: time, // Time since UNIX Epoch in milliseconds. (required)
-    title: title, // The title for the annotation tooltip. (required)
-    tags: tags, // Tags for the annotation. (optional)
-    text: text // Text for the annotation. (optional)
-  }
-]
-```
-
-Note: If the datasource is configured to connect directly to the backend, you
-also need to implement an OPTIONS endpoint at `/annotations` that responds
-with the correct CORS headers:
-
-```
-Access-Control-Allow-Headers:accept, content-type
-Access-Control-Allow-Methods:POST
-Access-Control-Allow-Origin:*
-```
-
-### Search API
-
-Example request
-``` javascript
-{ target: 'upper_50' }
-```
-
-The search api can either return an array or map.
-
-Example array response
-``` javascript
-["upper_25","upper_50","upper_75","upper_90","upper_95"]
-```
-
-Example map response
-``` javascript
-[ { "text" :"upper_25", "value": 1}, { "text" :"upper_75", "value": 2} ]
-```
-
-### Tag Keys API
-
-Example request
-``` javascript
-{ }
-```
-
-The tag keys api returns:
-```javascript
-[
-    {"type":"string","text":"City"},
-    {"type":"string","text":"Country"}
-]
-```
-
-### Tag Values API
-
-Example request
-``` javascript
-{"key": "City"}
-```
-
-The tag values api returns:
-```javascript
-[
-    {'text': 'Eins!'},
-    {'text': 'Zwei'},
-    {'text': 'Drei!'}
-]
-```
-
-### Dev setup
-
-This plugin requires node 6.10.0
-
-```
-npm install -g yarn
-yarn install
-npm run build
-```
-
-### Changelog
-
-1.4.0
-
-- Support for adhoc filters:
-  - added tag-keys + tag-values api
-  - added adHocFilters parameter to query body
-
-1.3.5
-- Fix for dropdowns in query editor to allow writing template variables (broke due to change in Grafana).
-
-1.3.4
-- Adds support for With Credentials (sends grafana cookies with request) when using Direct mode
-- Fix for the typeahead component for metrics dropdown (`/search` endpoint).
-
-1.3.3
- - Adds support for basic authentication
-
-1.2.4
- - Add support returning sets in the search endpoint
-
-1.2.3
- - Allow nested templates in find metric query. #23
-
-1.2.2
- - Dont execute hidden queries
- - Template support for metrics queries
- - Template support for annotation queries
-
-### If using Grafana 2.6
-NOTE!
-for grafana 2.6 please use [this version](https://github.com/grafana/simple-json-datasource/commit/b78720f6e00c115203d8f4c0e81ccd3c16001f94)
-
-Copy the data source you want to `/public/app/plugins/datasource/`. Then restart grafana-server. The new data source should now be available in the data source type dropdown in the Add Data Source View.
