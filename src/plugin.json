@@ -1,0 +1,31 @@
+{
+  "name": "O-MI Server",
+  "id": "o-mi-server",
+  "type": "datasource",
+
+  "partials": {
+    "config": "data/plugins/grafana-o-mi-plugin/dist/partials/config.html"
+  },
+
+  "metrics": true,
+  "annotations": false,
+
+  "info": {
+    "description": "O-MI Server plugin for Grafana",
+    "author": {
+      "name": "Holonix S.r.l.",
+      "url": "https://holonix.it"
+    },
+    "logos": {
+      "small": "img/0-MI.svg",
+      "large": "img/0-MI.svg"
+    },
+    "version": "0.0.1",
+    "updated": "2018-09-21"
+  },
+
+  "dependencies": {
+    "grafanaVersion": "3.x.x",
+    "plugins": [ ]
+  }
+}

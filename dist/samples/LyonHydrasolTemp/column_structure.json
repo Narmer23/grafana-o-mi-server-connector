@@ -1,0 +1,27 @@
+[
+  {
+    "text": "Sensor",
+    "type": "text",
+    "path": "id.#text"
+  },
+  {
+    "text": "Latitude",
+    "type": "double",
+    "path": "InfoItem[0].value.#text"
+  },
+  {
+    "text": "Longitude",
+    "type": "double",
+    "path": "InfoItem[1].value.#text"
+  },
+  {
+    "text": "Air temperature",
+    "type": "number",
+    "path": "Object[2].Object[1].InfoItem[1].value.#text"
+  },
+  {
+    "text": "Time",
+    "type": "date",
+    "path": "Object[2].Object[1].InfoItem[1].value._attributes.dateTime"
+  }
+]

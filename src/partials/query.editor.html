@@ -1,0 +1,18 @@
+<query-editor-row query-ctrl="ctrl" class="" has-text-edit-mode="true">
+    <div class="gf-form-inline">
+        <div class="gf-form width-30 p-x-1 p-b-1">
+            <div class="max-width">
+                <h6>OMI XML Query</h6>
+                <textarea class="gf-form-input" rows="20" ng-model="ctrl.target.target" spellcheck="false" ng-blur="ctrl.onChangeInternal()"/>
+            </div>
+        </div>
+        <div class="gf-form width-30 p-x-1 p-b-1">
+            <div class="max-width">
+                <h6>ODF Object Type</h6>
+                <input placeholder="Insert the type of Objects to create array from..." type="text" class="gf-form-input" ng-model="ctrl.target.objectType"/>
+                <h6 class="p-t-1">Column definition</h6>
+                <textarea placeholder="Insert column data structure as a JSON array. Every element must have 'text', 'type' and 'path'. The path refers to a dot notation representation of the value in the element of the array." class="gf-form-input" rows="16" ng-model="ctrl.target.columnStructure" spellcheck="false" ng-blur="ctrl.onChangeInternal()"/>
+            </div>
+        </div>
+    </div>
+</query-editor-row>

@@ -1,0 +1,14 @@
+<omiEnvelope xmlns="http://www.opengroup.org/xsd/omi/1.0/" version="1.0" ttl="0">
+    <read msgformat="odf">
+        <msg>
+            <Objects xmlns="http://www.opengroup.org/xsd/odf/1.0/">
+                <Object>
+                    <id>Organization:SigrenEa-V1.1.0</id>
+                    <Object>
+                        <id>Deployment:Bottle_Bank:1edd171c-5f2d-11e8-a6ab-10604b7fb2e7</id>
+                    </Object>
+                </Object>
+            </Objects>
+        </msg>
+    </read>
+</omiEnvelope>

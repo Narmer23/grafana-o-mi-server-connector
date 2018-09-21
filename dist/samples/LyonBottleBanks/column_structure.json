@@ -1,0 +1,32 @@
+[
+  {
+    "text": "SerialNumber",
+    "type": "text",
+    "path": "Object.Object.InfoItem[3].value.#text"
+  },
+  {
+    "text": "AvgFillingRatePerDay",
+    "type": "number",
+    "path": "Object.Object.Object[0].InfoItem.value.#text"
+  },
+  {
+    "text": "FillingLimit",
+    "type": "number",
+    "path": "Object.Object.Object[1].InfoItem.value.#text"
+  },
+  {
+    "text": "FillingRate",
+    "type": "number",
+    "path": "Object.Object.Object[2].InfoItem.value.#text"
+  },
+  {
+    "text": "MaxCapacity",
+    "type": "number",
+    "path": "Object.Object.Object[3].InfoItem.value.#text"
+  },
+  {
+    "text": "Time",
+    "type": "date",
+    "path": "Object.Object.InfoItem[0].value._attributes.dateTime"
+  }
+]
