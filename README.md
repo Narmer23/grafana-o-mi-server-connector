@@ -22,7 +22,7 @@ npm run build
 or navigate to the `node_modules/grunt` directory and issue the `grunt` command. You can now start your Grafana server instance
 and see the **_O-MI Server_** plugin under the _**Plugin**_ section.
 
-###Usage
+### Usage
 
 Create a datasource using the O-MI Server plugin and pointing to your O-MI server:
 ![Datasource Creation](docs/images/datasource_creation.PNG)
